@@ -1,4 +1,4 @@
-const {DataTypes}  = require("sequelize");
+const { DataTypes } = require("sequelize");
 
 const sequelize = require("../utils/DbConnection");
 
@@ -19,14 +19,26 @@ const Employee = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    createdAt: {
-      type: DataTypes.DATE,
-      defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
+    bonusStars: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
     },
-    updatedAt: {
-      type: DataTypes.DATE,
-      defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
-    }
+    employee_of_the_day: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
+    },
+    employee_of_the_week: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
+    },
+    employee_of_the_month: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
+    },
   },
   { timestamps: true }
 );

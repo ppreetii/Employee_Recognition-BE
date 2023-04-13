@@ -27,6 +27,26 @@ module.exports = {
         type: Sequelize.DATE,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       },
+      bonusStars : {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        defaultValue: 0
+      },
+      employee_of_the_day: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        defaultValue: 0
+      },
+      employee_of_the_week: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        defaultValue: 0
+      },
+      employee_of_the_month: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        defaultValue: 0
+      }
     });
   },
   async down(queryInterface, Sequelize) {

@@ -25,6 +25,19 @@ const Task = sequelize.define(
     },
     date_assigned: {
       type: DataTypes.DATE,
+      allowNull:true
+    },
+    deadline:{
+      type: DataTypes.DATE,
+      allowNull:true
+    },
+    date_started:{
+      type: DataTypes.DATE,
+      allowNull:true
+    },
+    date_completed:{
+      type: DataTypes.DATE,
+      allowNull:true
     },
     createdAt: {
       type: DataTypes.DATE,

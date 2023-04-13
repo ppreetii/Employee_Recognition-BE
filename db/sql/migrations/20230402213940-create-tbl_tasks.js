@@ -22,14 +22,25 @@ module.exports = {
       },
       date_assigned: {
         type: Sequelize.DATE,
+        allowNull: true
+      },
+      deadline:{
+        type: Sequelize.DATE,
+        allowNull:true
+      },
+      date_started:{
+        type: Sequelize.DATE,
+        allowNull:true
+      },
+      date_completed:{
+        type: Sequelize.DATE,
+        allowNull:true
       },
       createdAt: {
-        allowNull: false,
         type: Sequelize.DATE,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       },
       updatedAt: {
-        allowNull: false,
         type: Sequelize.DATE,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       },

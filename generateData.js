@@ -1,8 +1,7 @@
 // const fs = require("fs");
 
-/*
 // ** Uncomment this code to generate employee data
-
+/*
 const jobTitles = [
   "Accountant",
   "Administrative Assistant",
@@ -38,12 +37,20 @@ function generateEmployeeData(count) {
     const id = i;
     const name = `Employee ${i}`;
     const designation = getRandomJobTitle();
-    
-    employees.push({
+    let employee = {
       id,
       name,
-      designation
-    });
+      designation,
+      employee_of_the_day: Math.floor(Math.random() * (60 - 0 + 1)) + 0,
+      employee_of_the_week: Math.floor(Math.random() * (20 - 0 + 1)) + 0,
+      employee_of_the_month: Math.floor(Math.random() * (8 - 0 + 1)) + 0,
+    };
+    let bonus =
+      employee.employee_of_the_day * 20 +
+      employee.employee_of_the_week * 50 +
+      employee.employee_of_the_month * 500;
+    employee.bonusStars = bonus > 5000 ? 5000 : bonus;
+    employees.push(employee);
   }
 
   return employees;
@@ -56,11 +63,10 @@ fs.writeFile("employee_data.json", JSON.stringify(testData), (err) => {
 });
 
 */
-
 // ======================================================================================================================
 
-/*
 // ** Uncomment this code to generate task data
+/*
 const statuses = ["ToDo", "InProgress", "Done"];
 
 function getRandomStatus() {
@@ -81,13 +87,37 @@ function generateTaskData(employees, startDate) {
       const summary = `Task ${id} Summary`;
       const description = `Task ${id} Description`;
       const status = getRandomStatus();
-      const randomTime =
-        currentDateObj.getTime() -
-        (currentDateObj.getTime() -
-          currentDateObj.getTimezoneOffset() * 60 * 1000 -
-          currentDate.getTime()) *
-          Math.random();
-      const dateAssigned = new Date(randomTime).toISOString().slice(0, 10);
+      const randomTime = new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth(),
+        currentDate.getDate()
+      ).getTime();
+      const date_assigned = new Date(
+        randomTime + Math.floor(Math.random() * 86400000)
+      ); // random number of milliseconds to add to current day to get date_assigned
+      const daysToAdd = Math.floor(Math.random() * 2) + 2; // random number of days to add to date_assigned to get the deadline
+      const deadline = new Date(date_assigned.getTime() + daysToAdd * 86400000); // convert days to milliseconds and add to date_assigned
+      let date_started;
+      if (status !== "ToDo") {
+        date_started = new Date(
+          date_assigned.getTime() +
+            Math.floor(
+              Math.random() * (deadline.getTime() - date_assigned.getTime())
+            )
+        ); // random number of milliseconds to add to date_assigned to get date_started, before deadline
+      }
+      let date_completed;
+      if (status === "Done") {
+        const maxCompletionTime = deadline.getTime() + 2 * 86400000;
+        date_completed = new Date(
+          Math.min(
+            maxCompletionTime,
+            date_assigned.getTime() + Math.floor(Math.random() * 4) * 86400000
+          )
+        ); // random number of days to add to date_assigned to get date_completed, but maximum of 2 days late from deadline
+      } else if (status === "InProgress") {
+        date_completed = null;
+      }
       const employeeId =
         employees[Math.floor(Math.random() * employees.length)].id;
 
@@ -96,8 +126,15 @@ function generateTaskData(employees, startDate) {
         summary,
         description,
         status,
-        dateAssigned,
+        date_assigned: convertDateFormat(date_assigned),
+        deadline: convertDateFormat(deadline),
+        date_started: date_started ? convertDateFormat(date_started) : null,
+        date_completed: date_completed
+          ? convertDateFormat(date_completed)
+          : null,
         employeeId,
+        createdAt: convertDateFormat(currentDate),
+        updatedAt: convertDateFormat(currentDate),
       });
     }
 
@@ -107,11 +144,31 @@ function generateTaskData(employees, startDate) {
   return tasks;
 }
 
+function convertDateFormat(date) {
+  const formattedDateString = `${date.getFullYear()}-${(date.getMonth() + 1)
+    .toString()
+    .padStart(2, "0")}-${date.getDate().toString().padStart(2, "0")} ${date
+    .getHours()
+    .toString()
+    .padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}:${date
+    .getSeconds()
+    .toString()
+    .padStart(2, "0")}`;
+  return formattedDateString;
+}
+
+function randomTime(date) {
+  currentDateObj.getTime() -
+    (currentDateObj.getTime() -
+      currentDateObj.getTimezoneOffset() * 60 * 1000 -
+      currentDate.getTime()) *
+      Math.random();
+}
+
 const employeeData = JSON.parse(fs.readFileSync("employee_data.json", "utf8"));
 const testData = generateTaskData(employeeData, "2022-01-01");
 fs.writeFile("task_data.json", JSON.stringify(testData), (err) => {
   if (err) throw err;
   console.log("Test data written to task_data.json");
 });
-
 */
