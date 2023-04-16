@@ -50,6 +50,7 @@ exports.daysDifference = (date_1, date_2) => {
 };
 
 exports.getMondays = (date) => {
+  date = new Date(date);
   const daysUntilMonday =
     date.getDay() === 0 ? 6 : date.getDay() - 1 === 0 ? 7 : date.getDay() - 1;
 
@@ -85,5 +86,36 @@ exports.getMondays = (date) => {
   return {
     lastMonday: formatDate(lastMonday.toLocaleString()),
     nextMonday: formatDate(nextMonday.toLocaleString()),
+  };
+};
+
+exports.findFirstAndLastDayOfPreviousMonth = (date) => {
+  const d = new Date(date);
+  const firstDayOfPreviousMonth = new Date(
+    d.getFullYear(),
+    d.getMonth() - 1,
+    1
+  );
+  const lastDayOfPreviousMonth = new Date(d.getFullYear(), d.getMonth(), 0);
+  const nextMonth = new Date(d.getFullYear(), d.getMonth() + 1, 1);
+
+  return {
+    firstDay: `${firstDayOfPreviousMonth.getFullYear()}-${(
+      firstDayOfPreviousMonth.getMonth() + 1
+    )
+      .toString()
+      .padStart(2, "0")}-01`,
+    lastDay: `${lastDayOfPreviousMonth.getFullYear()}-${(
+      lastDayOfPreviousMonth.getMonth() + 1
+    )
+      .toString()
+      .padStart(2, "0")}-${lastDayOfPreviousMonth
+      .getDate()
+      .toString()
+      .padStart(2, "0")}`,
+    nextMonthDate: `${nextMonth.getFullYear()}-${(nextMonth.getMonth() + 1)
+      .toString()
+      .padStart(2, "0")}-01`,
+    month: COMMON.MONTHS[lastDayOfPreviousMonth.getMonth()]
   };
 };

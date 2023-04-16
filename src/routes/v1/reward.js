@@ -5,6 +5,6 @@ const rewardController = require("../../controllers/v1/reward")
 
 const router = Router();
 
-router.get('/:rewardType', rewardController.getEmployeeReward);
+router.get(API_CONST.REWARD_TYPE, rewardController.getEmployeeReward);
 
 module.exports = router;

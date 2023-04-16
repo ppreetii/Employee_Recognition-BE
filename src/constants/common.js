@@ -12,4 +12,18 @@ module.exports = {
     INPROGRESS: "InProgress",
     DONE: "Done",
   },
+  MONTHS: [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ]
 };

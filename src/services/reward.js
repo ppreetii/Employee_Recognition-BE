@@ -119,8 +119,8 @@ let getEmployeeOfTheWeek = async (date) => {
       throw new Error("Date is in the future.");
     }
 
-    let { lastMonday, nextMonday } = Utils.getMondays(new Date(date));
-    
+    let { lastMonday, nextMonday } = Utils.getMondays(date);
+
     if (new Date() < nextMonday) {
       return {
         message: "Results will be declared on Monday.",
@@ -154,8 +154,34 @@ let getEmployeeOfTheWeek = async (date) => {
     throw error;
   }
 };
+
 let getEmployeeOfTheMonth = async (date) => {
   try {
+    let { firstDay, lastDay, nextMonthDate, month } = Utils.findFirstAndLastDayOfPreviousMonth(date);
+
+    let employee = await Task.findAndCountAll({
+      attributes: [
+        [sequelize.fn("COUNT", sequelize.col("employeeId")), "totalTasks"],
+      ],
+      where: {
+        status: COMMON.TASK_STATUS.DONE,
+        date_completed: {
+          [sequelize.Op.between]: [firstDay, lastDay],
+        },
+      },
+      include: {
+        model: Employee,
+        attributes: ["id", "name", "designation"],
+      },
+      order: [["totalTasks", "DESC"]],
+      limit: 1,
+    });
+
+    return {
+      ...employee?.rows[0]?.employee.dataValues,
+      month,
+      nextMonthDate,
+    };
   } catch (error) {
     throw error;
   }
