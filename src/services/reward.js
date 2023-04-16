@@ -119,14 +119,13 @@ let getEmployeeOfTheWeek = async (date) => {
       throw new Error("Date is in the future.");
     }
 
-    let differenceInDays = Utils.daysDifference(new Date(date), new Date());
-    if (differenceInDays < 7 && new Date(date).getDay() !== 1) {
+    let { lastMonday, nextMonday } = Utils.getMondays(new Date(date));
+    
+    if (new Date() < nextMonday) {
       return {
         message: "Results will be declared on Monday.",
       };
     }
-
-    let { lastMonday, nextMonday } = Utils.getMondays(new Date(date));
 
     let employee = await Task.findAndCountAll({
       attributes: [
@@ -140,13 +139,17 @@ let getEmployeeOfTheWeek = async (date) => {
       },
       include: {
         model: Employee,
-        attributes: ["id","name", "designation"],
+        attributes: ["id", "name", "designation"],
       },
       order: [["totalTasks", "DESC"]],
       limit: 1,
     });
-   
-    return employee?.rows[0]?.employee;
+
+    return {
+      ...employee?.rows[0]?.employee.dataValues,
+      startOfWeek: lastMonday,
+      endOfWeek: nextMonday,
+    };
   } catch (error) {
     throw error;
   }
