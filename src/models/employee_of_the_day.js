@@ -1,7 +1,6 @@
 const { DataTypes } = require("sequelize");
 
 const sequelize = require("../utils/DbConnection");
-const db = require("../models/index");
 
 const empOfTheDay = sequelize.define(
   "employee_of_the_day",
@@ -27,16 +26,19 @@ const empOfTheDay = sequelize.define(
 async function getEmployeeOfTheDay(date) {
   try {
     let employee = await empOfTheDay.findOne({
-      where: {
-        date,
-      },
+      where: sequelize.where(sequelize.fn("DATE", sequelize.col("date")), date),
     });
 
     if (!employee) {
       employee = await findAndSave(date);
     }
 
-    return employee;
+    return {
+      id: employee.employeeId,
+      name: employee.name,
+      designation: employee.designation,
+      date,
+    };
   } catch (error) {
     throw error;
   }
@@ -60,7 +62,7 @@ async function findAndSave(date) {
       };
     }
 
-    return employee;
+    return employee?.[0] ?? {};
   } catch (error) {
     throw error;
   }

@@ -5,6 +5,7 @@ module.exports = {
   WEEKEND: {
     SAT: 6,
     SUN: 0,
+    MON: 1
   },
   TASK_STATUS: {
     TODO: "ToDo",
