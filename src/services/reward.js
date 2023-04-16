@@ -1,8 +1,11 @@
+const sequelize = require("sequelize");
+
 const EmpOfTheDayModel = require("../models/employee_of_the_day");
 const COMMON = require("../constants/common");
 const Utils = require("../utils/helper");
 const holidayList = require("../utils/data/holidays");
 const Employee = require("../models/employee");
+const Task = require("../models/task");
 
 exports.getEmployees = async (rewardType, date) => {
   try {
@@ -59,7 +62,6 @@ let getEmployeeOfTheDay = async (date) => {
 
       // Check if it is 7 PM
       if (currentHour < 19) {
-      
         let lastDate = Utils.findLastWeekDay(date);
         data = await EmpOfTheDayModel.getEmployeeOfTheDay(lastDate);
       }
@@ -69,23 +71,22 @@ let getEmployeeOfTheDay = async (date) => {
 
         if (Array.isArray(data) && data.length > 0) {
           const employee = await Employee.findOne({
-            where:{
-              id: data[0].employeeId
-            }
+            where: {
+              id: data[0].employeeId,
+            },
           });
 
-          if(!employee){
-            throw new Error('Employee Not Found')
+          if (!employee) {
+            throw new Error("Employee Not Found");
           }
 
-          if(employee.bonusStars + 50 < 5000){
-            employee.bonusStars += 50
+          if (employee.bonusStars + 50 < 5000) {
+            employee.bonusStars += 50;
           }
 
           employee.employee_of_the_day += 1;
-          
+
           await employee.save();
-          
         }
       }
 
@@ -114,6 +115,41 @@ let getEmployeeOfTheDay = async (date) => {
 
 let getEmployeeOfTheWeek = async (date) => {
   try {
+    if (Utils.isFutureDate(date)) {
+      throw new Error("Date is in the future.");
+    }
+
+    let { lastMonday, nextMonday } = Utils.getMondays(new Date(date));
+    
+    if (new Date() < nextMonday) {
+      return {
+        message: "Results will be declared on Monday.",
+      };
+    }
+
+    let employee = await Task.findAndCountAll({
+      attributes: [
+        [sequelize.fn("COUNT", sequelize.col("employeeId")), "totalTasks"],
+      ],
+      where: {
+        status: COMMON.TASK_STATUS.DONE,
+        date_completed: {
+          [sequelize.Op.between]: [lastMonday, nextMonday],
+        },
+      },
+      include: {
+        model: Employee,
+        attributes: ["id", "name", "designation"],
+      },
+      order: [["totalTasks", "DESC"]],
+      limit: 1,
+    });
+
+    return {
+      ...employee?.rows[0]?.employee.dataValues,
+      startOfWeek: lastMonday,
+      endOfWeek: nextMonday,
+    };
   } catch (error) {
     throw error;
   }
