@@ -1,6 +1,7 @@
 const { DataTypes } = require("sequelize");
 
 const sequelize = require("../utils/DbConnection");
+const Employee = require('../models/employee')
 
 const empOfTheDay = sequelize.define(
   "employee_of_the_day",
@@ -22,6 +23,10 @@ const empOfTheDay = sequelize.define(
   },
   { timestamps: true }
 );
+
+//defining relationships
+empOfTheDay.belongsTo(Employee, { foreignKey: "employeeId" });
+Employee.hasMany(empOfTheDay, { foreignKey: 'employeeId' });
 
 async function getEmployeeOfTheDay(date) {
   try {

@@ -38,14 +38,6 @@ const Task = sequelize.define(
     date_completed:{
       type: DataTypes.DATE,
       allowNull:true
-    },
-    createdAt: {
-      type: DataTypes.DATE,
-      defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
-    },
-    updatedAt: {
-      type: DataTypes.DATE,
-      defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
     }
   },
   { timestamps: true }

@@ -116,6 +116,7 @@ exports.findFirstAndLastDayOfPreviousMonth = (date) => {
     nextMonthDate: `${nextMonth.getFullYear()}-${(nextMonth.getMonth() + 1)
       .toString()
       .padStart(2, "0")}-01`,
-    month: COMMON.MONTHS[lastDayOfPreviousMonth.getMonth()]
+    month: lastDayOfPreviousMonth.getMonth(),
+    year: lastDayOfPreviousMonth.getFullYear()
   };
 };

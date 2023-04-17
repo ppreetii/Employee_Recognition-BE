@@ -1,6 +1,8 @@
 const sequelize = require("sequelize");
 
 const EmpOfTheDayModel = require("../models/employee_of_the_day");
+const EmpOfTheMonthModel = require("../models/employee_of_the_month");
+const EmpOfTheWeekModel = require("../models/employee_of_the_week");
 const COMMON = require("../constants/common");
 const Utils = require("../utils/helper");
 const holidayList = require("../utils/data/holidays");
@@ -127,29 +129,19 @@ let getEmployeeOfTheWeek = async (date) => {
       };
     }
 
-    let employee = await Task.findAndCountAll({
-      attributes: [
-        [sequelize.fn("COUNT", sequelize.col("employeeId")), "totalTasks"],
-      ],
-      where: {
-        status: COMMON.TASK_STATUS.DONE,
-        date_completed: {
-          [sequelize.Op.between]: [lastMonday, nextMonday],
-        },
-      },
-      include: {
-        model: Employee,
-        attributes: ["id", "name", "designation"],
-      },
-      order: [["totalTasks", "DESC"]],
-      limit: 1,
-    });
+    let employee = await EmpOfTheWeekModel.getEmployeeOfTheWeek(
+      date,
+      lastMonday,
+      nextMonday
+    );
 
-    return {
-      ...employee?.rows[0]?.employee.dataValues,
-      startOfWeek: lastMonday,
-      endOfWeek: nextMonday,
-    };
+    return employee
+      ? {
+          ...employee,
+          startOfWeek: lastMonday,
+          endOfWeek: nextMonday,
+        }
+      : {};
   } catch (error) {
     throw error;
   }
@@ -157,31 +149,23 @@ let getEmployeeOfTheWeek = async (date) => {
 
 let getEmployeeOfTheMonth = async (date) => {
   try {
-    let { firstDay, lastDay, nextMonthDate, month } = Utils.findFirstAndLastDayOfPreviousMonth(date);
+    let { firstDay, lastDay, nextMonthDate, month, year } =
+      Utils.findFirstAndLastDayOfPreviousMonth(date);
 
-    let employee = await Task.findAndCountAll({
-      attributes: [
-        [sequelize.fn("COUNT", sequelize.col("employeeId")), "totalTasks"],
-      ],
-      where: {
-        status: COMMON.TASK_STATUS.DONE,
-        date_completed: {
-          [sequelize.Op.between]: [firstDay, lastDay],
-        },
-      },
-      include: {
-        model: Employee,
-        attributes: ["id", "name", "designation"],
-      },
-      order: [["totalTasks", "DESC"]],
-      limit: 1,
-    });
-
-    return {
-      ...employee?.rows[0]?.employee.dataValues,
+    let employee = await EmpOfTheMonthModel.getEmployeeOfTheMonth(
       month,
-      nextMonthDate,
-    };
+      year,
+      firstDay,
+      lastDay
+    );
+
+    return employee
+      ? {
+          ...employee,
+          month: COMMON.MONTHS[month],
+          nextMonthDate,
+        }
+      : {};
   } catch (error) {
     throw error;
   }
