@@ -1,5 +1,3 @@
-const sequelize = require("sequelize");
-
 const EmpOfTheDayModel = require("../models/employee_of_the_day");
 const EmpOfTheMonthModel = require("../models/employee_of_the_month");
 const EmpOfTheWeekModel = require("../models/employee_of_the_week");
@@ -7,7 +5,6 @@ const COMMON = require("../constants/common");
 const Utils = require("../utils/helper");
 const holidayList = require("../utils/data/holidays");
 const Employee = require("../models/employee");
-const Task = require("../models/task");
 
 exports.getEmployees = async (rewardType, date) => {
   try {
