@@ -1,3 +1,4 @@
+[![CodeQL](https://github.com/ppreetii/Employee_Recognition-BE/actions/workflows/codeql.yml/badge.svg)](https://github.com/ppreetii/Employee_Recognition-BE/actions/workflows/codeql.yml)
 ## Employee_Recognition-BE
 
 ### Problem Definition
