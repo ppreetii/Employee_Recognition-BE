@@ -1,7 +1,8 @@
 const { DataTypes } = require("sequelize");
 
 const sequelize = require("../utils/DbConnection");
-const Employee = require('../models/employee')
+const Employee = require('../models/employee');
+const COMMON = require('../constants/common');
 
 const empOfTheDay = sequelize.define(
   "employee_of_the_day",
@@ -52,19 +53,13 @@ async function getEmployeeOfTheDay(date) {
 async function findAndSave(date) {
   try {
     let employee = await sequelize.query(
-      `CALL get_employee_of_the_day('Done', '${date}')`
+      `CALL get_employee_of_the_day('${COMMON.TASK_STATUS.DONE}', '${date}')`
     );
 
     if (!employee) {
       employee = await sequelize.query(
-        `CALL get_employee_of_the_day('InProgress', '${date}')`
+        `CALL get_employee_of_the_day('${COMMON.TASK_STATUS.INPROGRESS}', '${date}')`
       );
-    }
-
-    if (!employee) {
-      return {
-        message: `No Winner on ${date}. Lets Buckle up and try again. Best of Luck!`,
-      };
     }
 
     return employee?.[0] ?? {};
