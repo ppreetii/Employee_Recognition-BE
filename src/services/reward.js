@@ -5,10 +5,11 @@ const COMMON = require("../constants/common");
 const Utils = require("../utils/helper");
 const holidayList = require("../utils/data/holidays");
 const Employee = require("../models/employee");
+const PdfServices = require('./pdf')
 
 exports.getEmployees = async (rewardType, date) => {
   try {
-    let employee;
+    let employee,certificateData = {};
     if (rewardType === COMMON.EMP_OF_DAY) {
       employee = await getEmployeeOfTheDay(date);
     }
@@ -17,7 +18,11 @@ exports.getEmployees = async (rewardType, date) => {
     }
     if (rewardType === COMMON.EMP_OF_MONTH) {
       employee = await getEmployeeOfTheMonth(date);
+      certificateData.month = employee.month;
     }
+
+    certificateData.name = employee.name;
+    PdfServices.generateCertificate(rewardType, certificateData);
 
     return employee ?? {};
   } catch (error) {
