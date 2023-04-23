@@ -5,12 +5,10 @@ const COMMON = require("../constants/common");
 const Utils = require("../utils/helper");
 const holidayList = require("../utils/data/holidays");
 const Employee = require("../models/employee");
-const PdfServices = require('./pdf');
-const {sendEmail} = require('../utils/sendEmail');
 
 exports.getEmployees = async (rewardType, date) => {
   try {
-    let employee,certificateData = {};
+    let employee;
     if (rewardType === COMMON.EMP_OF_DAY) {
       employee = await getEmployeeOfTheDay(date);
     }
@@ -19,12 +17,7 @@ exports.getEmployees = async (rewardType, date) => {
     }
     if (rewardType === COMMON.EMP_OF_MONTH) {
       employee = await getEmployeeOfTheMonth(date);
-      certificateData.month = employee.month;
     }
-
-    certificateData.name = employee.name;
-    PdfServices.generateCertificate(rewardType, certificateData);
-    await sendEmail(employee.email,employee.name,rewardType)
 
     return employee ?? {};
   } catch (error) {
@@ -34,33 +27,9 @@ exports.getEmployees = async (rewardType, date) => {
 
 let getEmployeeOfTheDay = async (date) => {
   try {
-    if (Utils.isFutureDate(date)) {
-      throw new Error("Date is in the future.");
-    }
-    const isWeekend = Utils.checkForWeekend(date);
-    if (isWeekend && Utils.isCurrentDate(date)) {
-      return {
-        workingDay: false,
-        message:
-          "Work is important, so is Rest. Enjoy your Weekend peacefully. Cheers!",
-      };
-    }
+    let isOffDay = checkWeekendOrHoliday(date);
+    if (isOffDay) return isOffDay;
 
-    if (isWeekend && Utils.isDateInPast(date)) {
-      return {
-        workingDay: false,
-        message: "This date falls on weekend. No Results Found",
-      };
-    }
-
-    const holiday = holidayList.find((elem) => elem.Date === date);
-
-    if (holiday) {
-      return {
-        workingDay: false,
-        message: `Given date is holiday for Occassion '${holiday.Ocassion}'`,
-      };
-    }
     let data;
     if (!Utils.isDateInPast(date) && !Utils.isFutureDate(date)) {
       // Current Date
@@ -174,3 +143,39 @@ let getEmployeeOfTheMonth = async (date) => {
     throw error;
   }
 };
+
+function checkWeekendOrHoliday(date) {
+  try {
+    if (Utils.isFutureDate(date)) {
+      throw new Error("Date is in the future.");
+    }
+    const isWeekend = Utils.checkForWeekend(date);
+    if (isWeekend && Utils.isCurrentDate(date)) {
+      return {
+        workingDay: false,
+        message:
+          "Work is important, so is Rest. Enjoy your Weekend peacefully. Cheers!",
+      };
+    }
+
+    if (isWeekend && Utils.isDateInPast(date)) {
+      return {
+        workingDay: false,
+        message: "This date falls on weekend. No Results Found",
+      };
+    }
+
+    const holiday = holidayList.find((elem) => elem.Date === date);
+
+    if (holiday) {
+      return {
+        workingDay: false,
+        message: `Given date is holiday for Occassion '${holiday.Ocassion}'`,
+      };
+    }
+
+    return;
+  } catch (error) {
+    throw error;
+  }
+}

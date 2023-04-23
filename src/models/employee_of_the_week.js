@@ -4,6 +4,8 @@ const sequelize = require("../utils/DbConnection");
 const Employee = require("./employee");
 const Task = require("./task");
 const COMMON = require("../constants/common");
+const PdfServices = require("../services/pdf");
+const { sendEmail } = require("../utils/sendEmail");
 
 const EmpOfTheWeek = sequelize.define(
   "employee_of_the_week",
@@ -15,13 +17,9 @@ const EmpOfTheWeek = sequelize.define(
       type: DataTypes.INTEGER,
       autoIncrement: true,
     },
-    name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    designation: {
-      type: DataTypes.STRING,
-      allowNull: false,
+    employeeId: {
+      type: DataTypes.INTEGER,
+      references: { model: "employees", key: "id" },
     },
     startDay: {
       type: DataTypes.DATE,
@@ -30,10 +28,6 @@ const EmpOfTheWeek = sequelize.define(
     endDay: {
       type: DataTypes.DATE,
       allowNull: false,
-    },
-    employeeId: {
-      type: DataTypes.INTEGER,
-      references: { model: "employees", key: "id" },
     },
   },
   { timestamps: true }
@@ -56,20 +50,23 @@ async function getEmployeeOfTheWeek(date, firstDay, lastDay) {
       },
       include: {
         model: Employee,
-        attributes: ["email"],
+        attributes: ["name", "designation", "email"],
       },
     });
 
-
     if (!data) {
       data = await findAndSave(firstDay, lastDay);
+      await PdfServices.generateCertificate(COMMON.EMP_OF_WEEK, {
+        name: data.name,
+      });
+      await sendEmail(data.email, data.name, COMMON.EMP_OF_WEEK);
     }
 
     return {
       id: data.employeeId,
-      name: data.name,
-      designation: data.designation,
-      email: data.employee?.dataValues?.email ||  data.email,
+      name: data.employee?.dataValues?.name || data.name,
+      designation: data.employee?.dataValues?.designation || data.designation,
+      email: data.employee?.dataValues?.email || data.email,
       date,
     };
   } catch (error) {
@@ -116,20 +113,20 @@ async function findAndSave(firstDay, lastDay) {
     await dbEmployee.save();
 
     let empObj = {
-      name: employee?.rows[0]?.employee.dataValues.name,
-      designation: employee?.rows[0]?.employee.dataValues.designation,
       startDay: firstDay,
       endDay: lastDay,
       employeeId: employee?.rows[0]?.employee.dataValues.id,
-    }
+    };
     const empOfTheWeek = new EmpOfTheWeek(empObj);
 
     await empOfTheWeek.save();
 
     return {
+      name: employee?.rows[0]?.employee.dataValues.name,
+      designation: employee?.rows[0]?.employee.dataValues.designation,
       ...empObj,
-      email: dbEmployee.email
-    }
+      email: dbEmployee.email,
+    };
   } catch (error) {
     throw error;
   }

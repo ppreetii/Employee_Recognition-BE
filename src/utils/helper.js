@@ -1,6 +1,6 @@
 const COMMON = require("../constants/common");
 
-exports.checkForWeekend = (date) => {
+const checkForWeekend = (date) => {
   let weekDay = new Date(date).getDay();
 
   if (weekDay === COMMON.WEEKEND.SAT || weekDay === COMMON.WEEKEND.SUN)
@@ -9,7 +9,7 @@ exports.checkForWeekend = (date) => {
   return false;
 };
 
-exports.isDateInPast = (date) => {
+const isDateInPast = (date) => {
   const currentDate = new Date();
   currentDate.setHours(0, 0, 0, 0); // set current date to midnight
 
@@ -17,7 +17,7 @@ exports.isDateInPast = (date) => {
   return new Date(date).getTime() < currentDate.getTime();
 };
 
-exports.isFutureDate = (date) => {
+const isFutureDate = (date) => {
   const currentDate = new Date();
   currentDate.setHours(0, 0, 0, 0);
   let givenDate = new Date(date);
@@ -26,30 +26,35 @@ exports.isFutureDate = (date) => {
   return givenDate.getTime() > currentDate.getTime();
 };
 
-exports.isCurrentDate = (date) => {
-  return new Date(date).getTime() === new Date().getTime();
+const isCurrentDate = (date) => {
+  const givenDate = new Date(date);
+  const currentDate = new Date();
+
+  return givenDate.getFullYear() === currentDate.getFullYear() &&
+    givenDate.getMonth() === currentDate.getMonth() &&
+    givenDate.getDate() === currentDate.getDate();
 };
 
-exports.findLastWeekDay = (date) => {
+const findLastWeekDay = (date) => {
   let lastDate = new Date(date);
   lastDate.setDate(lastDate.getDate() - 1);
   lastDate = lastDate.toISOString().substring(0, 10);
 
-  if (this.checkForWeekend(lastDate)) {
+  if (checkForWeekend(lastDate)) {
     findLastWeekDay(lastDate);
   }
 
   return lastDate;
 };
 
-exports.daysDifference = (date_1, date_2) => {
+const daysDifference = (date_1, date_2) => {
   let difference = date_2.getTime() - date_1.getTime();
   let TotalDays = Math.ceil(difference / (1000 * 3600 * 24));
 
   return TotalDays;
 };
 
-exports.getMondays = (date) => {
+const getMondays = (date) => {
   date = new Date(date);
   const daysUntilMonday =
     date.getDay() === 0 ? 6 : date.getDay() - 1 === 0 ? 7 : date.getDay() - 1;
@@ -89,7 +94,7 @@ exports.getMondays = (date) => {
   };
 };
 
-exports.findFirstAndLastDayOfPreviousMonth = (date) => {
+const findFirstAndLastDayOfPreviousMonth = (date) => {
   const d = new Date(date);
   const firstDayOfPreviousMonth = new Date(
     d.getFullYear(),
@@ -119,4 +124,15 @@ exports.findFirstAndLastDayOfPreviousMonth = (date) => {
     month: lastDayOfPreviousMonth.getMonth(),
     year: lastDayOfPreviousMonth.getFullYear()
   };
+};
+
+module.exports = {
+  checkForWeekend,
+  isDateInPast,
+  isFutureDate,
+  isCurrentDate,
+  findLastWeekDay,
+  daysDifference,
+  getMondays,
+  findFirstAndLastDayOfPreviousMonth,
 };

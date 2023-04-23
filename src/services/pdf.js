@@ -5,24 +5,35 @@ const path = require("path");
 const COMMON = require("../constants/common");
 
 function generateCertificate(rewardType, data) {
-  let doc = new PDFDocument({
-    layout: "landscape",
-    size: "A4",
+  return new Promise((resolve, reject) => {
+    let doc = new PDFDocument({
+      layout: "landscape",
+      size: "A4",
+    });
+
+    doc = generateCertificateBorder(doc);
+    doc = addLogo(rewardType, doc);
+    doc =
+      rewardType === COMMON.EMP_OF_MONTH
+        ? addRewardTitle(rewardType, doc, data?.month?.toUpperCase())
+        : addRewardTitle(rewardType, doc);
+
+    doc = addAppreciationContent(doc, data?.name?.toUpperCase());
+    doc = addRewardMessage(rewardType, doc);
+    doc = addSignatures(doc);
+
+    let outputPath = path.resolve(__dirname, `../utils/assets/${rewardType}.pdf`);
+    let writeStream = fs.createWriteStream(outputPath);
+    writeStream.on("finish", () => {
+      resolve();
+    });
+    writeStream.on("error", (err) => {
+      reject(err);
+    });
+
+    doc.pipe(writeStream);
+    doc.end();
   });
-
-  doc = generateCertificateBorder(doc);
-  doc = addLogo(rewardType, doc);
-  doc =
-    rewardType === COMMON.EMP_OF_MONTH
-      ? addRewardTitle(rewardType,doc, data?.month?.toUpperCase())
-      : addRewardTitle(rewardType, doc);
-
-  doc = addAppreciationContent(doc, data?.name?.toUpperCase());
-  doc = addRewardMessage(rewardType, doc);
-  doc = addSignatures(doc);
-  let outputPath = path.resolve(__dirname, `../utils/assets/${rewardType}.pdf`);
-  doc.pipe(fs.createWriteStream(outputPath));
-  doc.end();
 }
 
 function generateCertificateBorder(doc) {

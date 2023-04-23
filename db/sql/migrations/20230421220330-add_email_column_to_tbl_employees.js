@@ -7,7 +7,7 @@ module.exports = {
     try {
       await queryInterface.sequelize.query(
         `
-      ALTER TABLE employees ADD COLUMN email VARCHAR(255) NOT NULL;
+      ALTER TABLE employees ADD COLUMN email VARCHAR(255);
       `,
         { transaction }
       );

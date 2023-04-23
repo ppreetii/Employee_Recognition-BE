@@ -3,6 +3,8 @@ const { DataTypes } = require("sequelize");
 const sequelize = require("../utils/DbConnection");
 const Employee = require('../models/employee');
 const COMMON = require('../constants/common');
+const PdfServices = require("../services/pdf");
+const { sendEmail } = require("../utils/sendEmail");
 
 const empOfTheDay = sequelize.define(
   "employee_of_the_day",
@@ -11,16 +13,10 @@ const empOfTheDay = sequelize.define(
       type: DataTypes.DATE,
       primaryKey: true,
     },
-    name: {
-      type: DataTypes.STRING,
-    },
-    designation: {
-      type: DataTypes.STRING,
-    },
     employeeId: {
       type: DataTypes.INTEGER,
       references: { model: "employees", key: "id" },
-    },
+    }
   },
   { timestamps: true }
 );
@@ -31,18 +27,25 @@ Employee.hasMany(empOfTheDay, { foreignKey: 'employeeId' });
 
 async function getEmployeeOfTheDay(date) {
   try {
-    let employee = await empOfTheDay.findOne({
+    let data = await empOfTheDay.findOne({
       where: sequelize.where(sequelize.fn("DATE", sequelize.col("date")), date),
+      include: {
+        model: Employee,
+        attributes: [ "name", "designation","email"],
+      },
     });
 
-    if (!employee) {
-      employee = await findAndSave(date);
+    if (!data) {
+      data = await findAndSave(date);
+      await PdfServices.generateCertificate(COMMON.EMP_OF_DAY, {name: data.name});
+      await sendEmail(data.email, data.name, COMMON.EMP_OF_DAY);
     }
 
     return {
-      id: employee.employeeId,
-      name: employee.name,
-      designation: employee.designation,
+      id: data.employeeId,
+      name: data.employee?.dataValues?.name || data.name,
+      designation: data.employee?.dataValues?.designation || data.designation,
+      email: data.employee?.dataValues?.email || data.email,
       date,
     };
   } catch (error) {

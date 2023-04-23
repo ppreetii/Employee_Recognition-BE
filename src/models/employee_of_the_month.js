@@ -4,6 +4,8 @@ const sequelize = require("../utils/DbConnection");
 const Employee = require("./employee");
 const Task = require("./task");
 const COMMON = require("../constants/common");
+const PdfServices = require("../services/pdf");
+const { sendEmail } = require("../utils/sendEmail");
 
 const EmpOfTheMonth = sequelize.define(
   "employee_of_the_month",
@@ -15,13 +17,9 @@ const EmpOfTheMonth = sequelize.define(
       type: DataTypes.INTEGER,
       autoIncrement: true,
     },
-    name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    designation: {
-      type: DataTypes.STRING,
-      allowNull: false,
+    employeeId: {
+      type: DataTypes.INTEGER,
+      references: { model: "employees", key: "id" },
     },
     year: {
       type: DataTypes.INTEGER,
@@ -30,10 +28,6 @@ const EmpOfTheMonth = sequelize.define(
     month: {
       type: DataTypes.INTEGER,
       allowNull: false,
-    },
-    employeeId: {
-      type: DataTypes.INTEGER,
-      references: { model: "employees", key: "id" },
     },
   },
   { timestamps: true }
@@ -52,18 +46,24 @@ async function getEmployeeOfTheMonth(month, year, firstDay, lastDay) {
       },
       include: {
         model: Employee,
-        attributes: ["email"],
+        attributes: ["name", "designation", "email"],
       },
     });
 
     if (!data) {
       data = await findAndSave(month, year, firstDay, lastDay);
+
+      await PdfServices.generateCertificate(COMMON.EMP_OF_MONTH, {
+        name: data.name,
+        month: COMMON.MONTHS[month],
+      });
+      await sendEmail(data.email, data.name, COMMON.EMP_OF_MONTH);
     }
 
     return {
       id: data.employeeId,
-      name: data.name,
-      designation: data.designation,
+      name: data.employee?.dataValues?.name || data.name,
+      designation: data.employee?.dataValues?.designation || data.designation,
       email: data.employee?.dataValues?.email || data.email,
     };
   } catch (error) {
@@ -110,8 +110,6 @@ async function findAndSave(month, year, firstDay, lastDay) {
     await dbEmployee.save();
 
     let empObj = {
-      name: employee?.rows[0]?.employee.dataValues.name,
-      designation: employee?.rows[0]?.employee.dataValues.designation,
       month,
       year,
       employeeId: employee?.rows[0]?.employee.dataValues.id,
@@ -121,6 +119,8 @@ async function findAndSave(month, year, firstDay, lastDay) {
     await empOfTheMonth.save();
 
     return {
+      name: employee?.rows[0]?.employee.dataValues.name,
+      designation: employee?.rows[0]?.employee.dataValues.designation,
       ...empObj,
       email: dbEmployee.email,
     };

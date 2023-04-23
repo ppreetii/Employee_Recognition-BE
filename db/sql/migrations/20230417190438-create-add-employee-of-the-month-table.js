@@ -10,13 +10,9 @@ module.exports = {
         type: Sequelize.INTEGER,
         autoIncrement: true,
       },
-      name: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      designation: {
-        type: Sequelize.STRING,
-        allowNull: false,
+      employeeId: {
+        type: Sequelize.INTEGER,
+        references: { model: "employees", key: "id" },
       },
       year: {
         type: Sequelize.INTEGER,
@@ -25,11 +21,7 @@ module.exports = {
       month: {
         type: Sequelize.INTEGER,
         allowNull: false,
-      },
-      employeeId: {
-        type: Sequelize.INTEGER,
-        references: { model: "employees", key: "id" },
-      },
+      },     
       createdAt: {
         type: Sequelize.DATE,
         defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),

@@ -11,12 +11,6 @@ module.exports = {
             type: Sequelize.DATE,
             primaryKey: true,
           },
-          name: {
-            type: Sequelize.STRING,
-          },
-          designation: {
-            type: Sequelize.STRING,
-          },
           employeeId: {
             type: Sequelize.INTEGER,
             references: { model: "employees", key: "id" },
@@ -32,9 +26,12 @@ module.exports = {
         },
         { transaction }
       );
-      await queryInterface.sequelize.query(`
+      await queryInterface.sequelize.query(
+        `
       CREATE INDEX Idx_date ON employee_of_the_days (date);  
-      `, {transaction})
+      `,
+        { transaction }
+      );
       await transaction.commit();
     } catch (error) {
       await transaction.rollback();
@@ -44,10 +41,13 @@ module.exports = {
   async down(queryInterface, Sequelize) {
     const transaction = await queryInterface.sequelize.transaction();
     try {
-      await queryInterface.sequelize.query(`
+      await queryInterface.sequelize.query(
+        `
       DROP INDEX Idx_date ON employee_of_the_days;
-      `, {transaction});
-      await queryInterface.dropTable("employee_of_the_days", {transaction});
+      `,
+        { transaction }
+      );
+      await queryInterface.dropTable("employee_of_the_days", { transaction });
     } catch (error) {
       await transaction.rollback();
       throw error;

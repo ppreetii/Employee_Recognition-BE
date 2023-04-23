@@ -49,22 +49,26 @@ module.exports = {
             END IF;
             
             IF employee_name IS NOT NULL AND employee_designation IS NOT NULL AND employee_id IS NOT NULL THEN
-            INSERT INTO employee_of_the_days (date, name, designation,employeeId) 
-            VALUES (input_date, employee_name, employee_designation,employee_id);
+            INSERT INTO employee_of_the_days (date,employeeId) 
+            VALUES (input_date, employee_id);
             END IF;
 
         END IF;    
         
         /* return the result */
-        SELECT 
-            name,
-            designation,
-            employeeId,
-            date
+        SELECT
+            e2.name,
+            e2.designation,
+            e2.email,
+            e1.employeeId,
+            e1.date
         FROM 
-            employee_of_the_days
+             employee_of_the_days e1
+             LEFT JOIN 
+             employees e2
+		    ON e1.employeeId = e2.id
         WHERE 
-        DATE(date) = input_date;
+        DATE(e1.date) = input_date;
         
         END
       `,

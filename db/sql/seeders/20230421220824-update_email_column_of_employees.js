@@ -20,6 +20,6 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-   //Do nothing
+    //Do nothing
   },
 };
