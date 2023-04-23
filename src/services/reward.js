@@ -5,7 +5,8 @@ const COMMON = require("../constants/common");
 const Utils = require("../utils/helper");
 const holidayList = require("../utils/data/holidays");
 const Employee = require("../models/employee");
-const PdfServices = require('./pdf')
+const PdfServices = require('./pdf');
+const {sendEmail} = require('../utils/sendEmail');
 
 exports.getEmployees = async (rewardType, date) => {
   try {
@@ -23,6 +24,7 @@ exports.getEmployees = async (rewardType, date) => {
 
     certificateData.name = employee.name;
     PdfServices.generateCertificate(rewardType, certificateData);
+    await sendEmail(employee.email,employee.name,rewardType)
 
     return employee ?? {};
   } catch (error) {

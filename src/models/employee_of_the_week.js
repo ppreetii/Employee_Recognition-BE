@@ -45,7 +45,7 @@ Employee.hasMany(EmpOfTheWeek, { foreignKey: "employeeId" });
 
 async function getEmployeeOfTheWeek(date, firstDay, lastDay) {
   try {
-    let employee = await EmpOfTheWeek.findOne({
+    let data = await EmpOfTheWeek.findOne({
       where: {
         startDay: {
           [Op.lte]: date,
@@ -54,16 +54,22 @@ async function getEmployeeOfTheWeek(date, firstDay, lastDay) {
           [Op.gte]: date,
         },
       },
+      include: {
+        model: Employee,
+        attributes: ["email"],
+      },
     });
 
-    if (!employee) {
-      employee = await findAndSave(firstDay, lastDay);
+
+    if (!data) {
+      data = await findAndSave(firstDay, lastDay);
     }
 
     return {
-      id: employee.employeeId,
-      name: employee.name,
-      designation: employee.designation,
+      id: data.employeeId,
+      name: data.name,
+      designation: data.designation,
+      email: data.employee?.dataValues?.email ||  data.email,
       date,
     };
   } catch (error) {
@@ -109,17 +115,21 @@ async function findAndSave(firstDay, lastDay) {
 
     await dbEmployee.save();
 
-    const empOfTheWeek = new EmpOfTheWeek({
+    let empObj = {
       name: employee?.rows[0]?.employee.dataValues.name,
       designation: employee?.rows[0]?.employee.dataValues.designation,
       startDay: firstDay,
       endDay: lastDay,
       employeeId: employee?.rows[0]?.employee.dataValues.id,
-    });
+    }
+    const empOfTheWeek = new EmpOfTheWeek(empObj);
 
     await empOfTheWeek.save();
 
-    return empOfTheWeek;
+    return {
+      ...empObj,
+      email: dbEmployee.email
+    }
   } catch (error) {
     throw error;
   }

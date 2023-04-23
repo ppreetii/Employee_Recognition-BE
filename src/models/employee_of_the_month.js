@@ -45,21 +45,26 @@ Employee.hasMany(EmpOfTheMonth, { foreignKey: "employeeId" });
 
 async function getEmployeeOfTheMonth(month, year, firstDay, lastDay) {
   try {
-    let employee = await EmpOfTheMonth.findOne({
+    let data = await EmpOfTheMonth.findOne({
       where: {
         month,
         year,
       },
+      include: {
+        model: Employee,
+        attributes: ["email"],
+      },
     });
 
-    if (!employee) {
-      employee = await findAndSave(month, year, firstDay, lastDay);
+    if (!data) {
+      data = await findAndSave(month, year, firstDay, lastDay);
     }
 
     return {
-      id: employee.employeeId,
-      name: employee.name,
-      designation: employee.designation,
+      id: data.employeeId,
+      name: data.name,
+      designation: data.designation,
+      email: data.employee?.dataValues?.email || data.email,
     };
   } catch (error) {
     throw error;
@@ -104,17 +109,21 @@ async function findAndSave(month, year, firstDay, lastDay) {
 
     await dbEmployee.save();
 
-    const empOfTheMonth = new EmpOfTheMonth({
+    let empObj = {
       name: employee?.rows[0]?.employee.dataValues.name,
       designation: employee?.rows[0]?.employee.dataValues.designation,
       month,
       year,
       employeeId: employee?.rows[0]?.employee.dataValues.id,
-    });
+    };
+    const empOfTheMonth = new EmpOfTheMonth(empObj);
 
     await empOfTheMonth.save();
 
-    return empOfTheMonth;
+    return {
+      ...empObj,
+      email: dbEmployee.email,
+    };
   } catch (error) {
     throw error;
   }
