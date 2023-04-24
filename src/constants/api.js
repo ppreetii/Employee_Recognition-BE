@@ -3,5 +3,6 @@ module.exports = {
     REWARD: '/rewards',
     REWARD_TYPE: '/:rewardType',
     EMPLOYEE:'/employees',
-    EMPLOYEE_ID: '/:employeeId'
+    EMPLOYEE_ID: '/:employeeId',
+    TASK: '/tasks'
 }
