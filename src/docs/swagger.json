@@ -1,0 +1,370 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Employee Reward Sytem",
+    "description": "This system has shows results for logged-in employee, his/her assigned tasks, and the Rewards Info - Employee of the day, Employee of the Week,and Employee of The Month",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Preeti Gupta",
+      "email": "ppreeti.guptaa@gmail.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000/api/v1.0",
+      "description": "Local server"
+    }
+  ],
+  "paths": {
+    "/rewards/{rewardType}?date={date}": {
+      "get": {
+        "summary": "Returns Employee Information For Employee of Day",
+        "tags": ["Rewards"],
+        "description": "This API will return Employee For Given Reward Type.",
+        "x-amazon-apigateway-auth": {
+          "type": "NONE"
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "rewardType",
+            "required": true,
+            "schema": {
+              "enum": [
+                "employee-of-the-day",
+                "employee-of-the-week",
+                "employee-of-the-month"
+              ]
+            },
+            "description": "Reward Type"
+          },
+          {
+            "in": "path",
+            "name": "date",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Date for which to find Reward"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON object of Employee of Day",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmpOfDay"
+                },
+                "example": {
+                  "rewardType": "employee-of-the-day",
+                  "data": {
+                    "id": 20,
+                    "name": "Employee 20",
+                    "designation": "Marketing Manager",
+                    "email": "employee.20@peaksoft.com",
+                    "date": "2022-02-22"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/employees/{employeeId}": {
+      "get": {
+        "summary": "Returns Employee data by its Id",
+        "tags": ["Employees"],
+        "x-amazon-apigateway-auth": {
+          "type": "NONE"
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "employeeId",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "description": "The Employee ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A json object of Employee details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "items": {
+                    "$ref": "#/components/schemas/Employee"
+                  }
+                },
+                "example": {
+                  "id": "EMPK-1",
+                  "name": "Employee 1",
+                  "designation": "Database Administrator",
+                  "bonusStars": 3350,
+                  "employee_of_the_day": 5,
+                  "employee_of_the_week": 5,
+                  "employee_of_the_month": 6
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/employees/{employeeId}/tasks": {
+      "get": {
+        "summary": "Returns All tasks assigned to an employee",
+        "tags": ["Employees"],
+        "x-amazon-apigateway-auth": {
+          "type": "NONE"
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "employeeId",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "description": "The Employee ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An json object with an array of all tasks of an employee",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmpTask"
+                },
+                "example": {
+                  "tasks": [
+                    {
+                      "id": 607,
+                      "summary": "Task 607 Summary",
+                      "status": "ToDo",
+                      "date_assigned": "2022-07-21",
+                      "deadline": "2022-07-24",
+                      "date_completed": "1970-01-01"
+                    },
+                    {
+                      "id": 965,
+                      "summary": "Task 965 Summary",
+                      "status": "Done",
+                      "date_assigned": "2022-11-23",
+                      "deadline": "2022-11-25",
+                      "date_completed": "1970-01-01"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Employee": {
+        "description": "A detailed schema of Employee",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Employee ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "Employee Name"
+          },
+          "designation": {
+            "type": "string",
+            "description": "Employee Designation"
+          },
+          "bonusStars": {
+            "type": "integer",
+            "description": "Bonus Stars Earned till now in the year"
+          },
+          "employee_of_the_day": {
+            "type": "integer",
+            "description": "No. of times employee named empOfDay in a year"
+          },
+          "employee_of_the_week": {
+            "type": "integer",
+            "description": "No. of times employee named empOfWeek in a year"
+          },
+          "employee_of_the_month": {
+            "type": "integer",
+            "description": "No. of times employee named empOfMonth in a year"
+          }
+        }
+      },
+      "EmpTask": {
+        "description": "A detailed schema of Employee's Tasks Array",
+        "properties": {
+          "tasks": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "description": "Task ID"
+                },
+                "summary": {
+                  "type": "string",
+                  "description": "Task Summary/Title"
+                },
+                "dateAssigned": {
+                  "type": "string",
+                  "description": "Date the task assigned to employee"
+                },
+                "deadline": {
+                  "type": "string",
+                  "description": "date by which task must be complete"
+                },
+                "dateCompleted": {
+                  "type": "string",
+                  "description": "date when task was completed by employee"
+                }
+              }
+            }
+          }
+        }
+      },
+      "EmpOfDay": {
+        "description": "Detailed Schema of Employee record of Employee of Day",
+        "properties": {
+          "rewardType": {
+            "type": "string",
+            "value": "employee-of-the-day"
+          },
+          "data": {
+            "properties": {
+              "id": {
+                "type": "integer",
+                "description": "Employee ID"
+              },
+              "name": {
+                "type": "string",
+                "description": "Employee Name"
+              },
+              "designation": {
+                "type": "string",
+                "description": "Employee Designation"
+              },
+              "email": {
+                "type": "string",
+                "description": "Employee Email"
+              },
+              "date": {
+                "type": "string",
+                "description": "Date of Reward"
+              }
+            }
+          }
+        }
+      },
+      "EmpOfWeek": {
+        "description": "Detailed Schema of Employee record of Employee of Week",
+        "properties": {
+          "rewardType": {
+            "type": "string",
+            "value": "employee-of-the-week"
+          },
+          "data": {
+            "properties": {
+              "id": {
+                "type": "integer",
+                "description": "Employee ID"
+              },
+              "name": {
+                "type": "string",
+                "description": "Employee Name"
+              },
+              "designation": {
+                "type": "string",
+                "description": "Employee Designation"
+              },
+              "email": {
+                "type": "string",
+                "description": "Employee Email"
+              },
+              "date": {
+                "type": "string",
+                "description": "Given Date"
+              },
+              "startOfWeek": {
+                "type": "string",
+                "description": "Start of Reward Week in consideration"
+              },
+              "endOfWeek": {
+                "type": "string",
+                "description": "End of Reward Week in consideration"
+              }
+            }
+          }
+        }
+      },
+      "EmpOfMonth": {
+        "description": "Detailed Schema of Employee record of Employee of Month",
+        "properties": {
+          "rewardType": {
+            "type": "string",
+            "value": "employee-of-the-month"
+          },
+          "data": {
+            "properties": {
+              "id": {
+                "type": "integer",
+                "description": "Employee ID"
+              },
+              "name": {
+                "type": "string",
+                "description": "Employee Name"
+              },
+              "designation": {
+                "type": "string",
+                "description": "Employee Designation"
+              },
+              "email": {
+                "type": "string",
+                "description": "Employee Email"
+              },
+              "month": {
+                "type": "string",
+                "description": "Reward Month"
+              },
+              "nextMonthDate": {
+                "type": "string",
+                "description": "Date of next result for EmpOfMonth"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

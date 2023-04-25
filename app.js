@@ -3,12 +3,14 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const helmet = require("helmet");
 const cron = require("node-cron");
+const swaggerUi = require('swagger-ui-express');
 
 const rewardRoutes = require("./src/routes/v1/reward");
 const employeeRoutes = require("./src/routes/v1/employee");
 const API = require("./src/constants/api");
 const rewardServices = require("./src/services/reward");
 const COMMON = require("./src/constants/common");
+const swaggerDocument = require('./src/docs/swagger');
 
 const app = express();
 
@@ -27,6 +29,7 @@ app.use(cors());
 app.use(helmet());
 app.use(API.BASE_URL + API.REWARD, rewardRoutes);
 app.use(API.BASE_URL + API.EMPLOYEE, employeeRoutes);
+app.use(API.SWAGGER, swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use("*", (req, res) => res.status(404).json("Page not found"));
 
 app.use((error, req, res, next) => {

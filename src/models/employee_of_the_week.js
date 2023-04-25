@@ -56,12 +56,12 @@ async function getEmployeeOfTheWeek(date, firstDay, lastDay) {
 
     if (!data) {
       data = await findAndSave(firstDay, lastDay);
+      if(!data) return;
       await PdfServices.generateCertificate(COMMON.EMP_OF_WEEK, {
         name: data.name,
       });
       await sendEmail(data.email, data.name, COMMON.EMP_OF_WEEK);
     }
-
     return {
       id: data.employeeId,
       name: data.employee?.dataValues?.name || data.name,
@@ -94,6 +94,9 @@ async function findAndSave(firstDay, lastDay) {
       limit: 1,
     });
 
+    if(employee.count === 0){
+      return;
+    }
     const dbEmployee = await Employee.findOne({
       where: {
         id: employee?.rows[0]?.employee?.dataValues?.id,

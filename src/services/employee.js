@@ -46,7 +46,18 @@ const getEmployeeTasks = async (id) => {
       order: [[["status", "ASC"]]],
     });
 
-    return tasks ?? [];
+    const transformedTasks = tasks.map(task => {
+      const { date_assigned, deadline, date_completed, ...rest } = task.dataValues;
+      const formatDate = date => new Date(date).toISOString().split('T')[0];
+      return {
+        ...rest,
+        date_assigned: formatDate(date_assigned),
+        deadline: formatDate(deadline),
+        date_completed: formatDate(date_completed),     
+      };
+    });
+
+    return transformedTasks;
   } catch (error) {
     throw error;
   }

@@ -52,7 +52,7 @@ async function getEmployeeOfTheMonth(month, year, firstDay, lastDay) {
 
     if (!data) {
       data = await findAndSave(month, year, firstDay, lastDay);
-
+      if(!data) return;
       await PdfServices.generateCertificate(COMMON.EMP_OF_MONTH, {
         name: data.name,
         month: COMMON.MONTHS[month],
@@ -91,6 +91,10 @@ async function findAndSave(month, year, firstDay, lastDay) {
       limit: 1,
     });
 
+    if(employee.count === 0){
+      return;
+    }
+    
     const dbEmployee = await Employee.findOne({
       where: {
         id: employee?.rows[0]?.employee?.dataValues?.id,
