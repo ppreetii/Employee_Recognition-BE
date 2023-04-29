@@ -51,9 +51,9 @@ const getEmployeeTasks = async (id) => {
       const formatDate = date => new Date(date).toISOString().split('T')[0];
       return {
         ...rest,
-        date_assigned: formatDate(date_assigned),
-        deadline: formatDate(deadline),
-        date_completed: formatDate(date_completed),     
+        date_assigned: date_assigned ? formatDate(date_assigned) : date_assigned,
+        deadline: deadline ? formatDate(deadline) : deadline,
+        date_completed: date_completed ? formatDate(date_completed) : date_completed,     
       };
     });
 
