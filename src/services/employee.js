@@ -46,14 +46,19 @@ const getEmployeeTasks = async (id) => {
       order: [[["status", "ASC"]]],
     });
 
-    const transformedTasks = tasks.map(task => {
-      const { date_assigned, deadline, date_completed, ...rest } = task.dataValues;
-      const formatDate = date => new Date(date).toISOString().split('T')[0];
+    const transformedTasks = tasks.map((task) => {
+      const { date_assigned, deadline, date_completed, ...rest } =
+        task.dataValues;
+      const formatDate = (date) => new Date(date).toISOString().split("T")[0];
       return {
         ...rest,
-        date_assigned: date_assigned ? formatDate(date_assigned) : date_assigned,
+        date_assigned: date_assigned
+          ? formatDate(date_assigned)
+          : date_assigned,
         deadline: deadline ? formatDate(deadline) : deadline,
-        date_completed: date_completed ? formatDate(date_completed) : date_completed,     
+        date_completed: date_completed
+          ? formatDate(date_completed)
+          : date_completed,
       };
     });
 
@@ -62,7 +67,26 @@ const getEmployeeTasks = async (id) => {
     throw error;
   }
 };
+
+const createEmployee = async (data) => {
+  try {
+    const dbEmployee = await Employee.saveToDb(data);
+    return {
+      id: "EMPK-"+ dbEmployee.id,
+      name: dbEmployee.name,
+      email: dbEmployee.email,
+      designation: dbEmployee.designation,
+      bonusStars: dbEmployee.bonusStars,
+      empOfDayCount: dbEmployee.employee_of_the_day,
+      empOfWeekCount: dbEmployee.employee_of_the_week,
+      empOfMonthCount: dbEmployee.employee_of_the_month,
+    };
+  } catch (error) {
+    throw error;
+  }
+};
 module.exports = {
   getEmployee,
   getEmployeeTasks,
+  createEmployee,
 };

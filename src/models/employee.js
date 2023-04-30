@@ -47,4 +47,23 @@ const Employee = sequelize.define(
   { timestamps: true }
 );
 
-module.exports = Employee;
+async function saveToDb(empData = {}) {
+  try {
+    const data = {
+      name: empData.name,
+      email: empData.email?.toLowerCase(),
+      designation: empData.designation,
+    };
+    const employee = new Employee(data);
+
+    await employee.save();
+
+    return employee;
+  } catch (error) {
+    throw error;
+  }
+}
+module.exports = {
+  Employee,
+  saveToDb,
+};

@@ -11,7 +11,7 @@
   },
   "servers": [
     {
-      "url": "http://localhost:3000/api/v1.0",
+      "url": "http://localhost:5000/api/v1.0",
       "description": "Local server"
     }
   ],
@@ -70,6 +70,113 @@
                     "email": "employee.20@peaksoft.com",
                     "date": "2022-02-22"
                   }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/employees": {
+      "post": {
+        "summary": "Create New Employee",
+        "tags": ["Employees"],
+        "x-amazon-apigateway-auth": {
+          "type": "NONE"
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "required": true
+                  },
+                  "email": {
+                    "type": "string",
+                    "required": true
+                  },
+                  "designation": {
+                    "type": "string",
+                    "required": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "A json object of Employee details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "items": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    },
+                    "designation": {
+                      "type": "string"
+                    },
+                    "bonusStars": {
+                      "type": "integer"
+                    },
+                    "empOfDayCount": {
+                      "type": "integer"
+                    },
+                    "empOfWeekCount": {
+                      "type": "integer"
+                    },
+                    "empOfMonthCount": {
+                      "type": "integer"
+                    }
+                  }
+                },
+                "example": {
+                  "id": "EMPK-1",
+                  "name": "Employee 1",
+                  "email": "employee.1@peaksoft.com",
+                  "designation": "Accountant",
+                  "bonusStars": 0,
+                  "empOfDayCount": 0,
+                  "empOfWeekCount": 0,
+                  "empOfMonthCount": 0
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "A json object of error details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "items": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "reason": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "messsage": "Error",
+                  "reason": "\"name\" must be a string ; \"email\" must be a valid email ; \"designation\" must be a string"
                 }
               }
             }

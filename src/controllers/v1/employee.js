@@ -1,6 +1,20 @@
 const { validate } = require("../../validation-schemas/validation");
-const { getEmployeeSchema } = require("../../validation-schemas/employee");
+const {
+  getEmployeeSchema,
+  createEmployeeSchema,
+} = require("../../validation-schemas/employee");
 const employeeServices = require("../../services/employee");
+
+const createEmployee = async (req, res, next) => {
+  try {
+    await validate(createEmployeeSchema, req.body);
+    const employee = await employeeServices.createEmployee(req.body);
+
+    res.status(201).json(employee);
+  } catch (error) {
+    next(error);
+  }
+};
 
 const getEmployee = async (req, res, next) => {
   try {
@@ -31,4 +45,5 @@ const getEmployeeTasks = async (req, res, next) => {
 module.exports = {
   getEmployee,
   getEmployeeTasks,
+  createEmployee
 };
