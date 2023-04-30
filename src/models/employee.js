@@ -63,7 +63,35 @@ async function saveToDb(empData = {}) {
     throw error;
   }
 }
+
+async function findEmployee(id) {
+  try {
+    const employee = await Employee.findByPk(id);
+    if (!employee) {
+      throw new Error("Employee Not Found");
+    }
+    return employee;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function updateEmployee(data) {
+  try {
+    const employee = await findEmployee(data.id);
+
+    employee.designation = data.designation;
+    await employee.save();
+
+    return employee;
+  } catch (error) {
+    throw error;
+  }
+}
+
 module.exports = {
   Employee,
   saveToDb,
+  updateEmployee,
+  findEmployee
 };

@@ -2,6 +2,7 @@ const { validate } = require("../../validation-schemas/validation");
 const {
   getEmployeeSchema,
   createEmployeeSchema,
+  updateEmployeeSchema
 } = require("../../validation-schemas/employee");
 const employeeServices = require("../../services/employee");
 
@@ -42,8 +43,26 @@ const getEmployeeTasks = async (req, res, next) => {
   }
 };
 
+const updateEmployee = async (req,res,next) =>{
+  try {
+    const data = {
+      id: req.params.employeeId,
+      designation : req.body?.designation
+    };
+    
+    await validate(updateEmployeeSchema, data);
+
+    const result = await employeeServices.updateEmployee(data);
+    
+    res.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports = {
   getEmployee,
   getEmployeeTasks,
-  createEmployee
+  createEmployee,
+  updateEmployee
 };

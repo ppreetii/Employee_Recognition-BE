@@ -224,9 +224,106 @@
                   "name": "Employee 1",
                   "designation": "Database Administrator",
                   "bonusStars": 3350,
-                  "employee_of_the_day": 5,
-                  "employee_of_the_week": 5,
-                  "employee_of_the_month": 6
+                  "empOfDayCount": 5,
+                  "empOfWeekCount": 5,
+                  "empOfMonthCount": 6
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch" : {
+        "summary": "Update Existing Employee",
+        "tags": ["Employees"],
+        "x-amazon-apigateway-auth": {
+          "type": "NONE"
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "designation": {
+                    "type": "string",
+                    "required": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "A json object of Employee details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "items": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    },
+                    "designation": {
+                      "type": "string"
+                    },
+                    "bonusStars": {
+                      "type": "integer"
+                    },
+                    "empOfDayCount": {
+                      "type": "integer"
+                    },
+                    "empOfWeekCount": {
+                      "type": "integer"
+                    },
+                    "empOfMonthCount": {
+                      "type": "integer"
+                    }
+                  }
+                },
+                "example": {
+                  "id": "EMPK-1",
+                  "name": "Employee 1",
+                  "email": "employee.1@peaksoft.com",
+                  "designation": "Accountant",
+                  "bonusStars": 345,
+                  "empOfDayCount": 16,
+                  "empOfWeekCount": 4,
+                  "empOfMonthCount": 0
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "A json object of error details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "items": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "reason": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "messsage": "Error",
+                  "reason": "\"id\" must be a number ; \"designation\" must be a string"
                 }
               }
             }

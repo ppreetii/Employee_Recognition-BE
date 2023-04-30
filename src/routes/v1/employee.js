@@ -8,5 +8,6 @@ const router = Router();
 router.post("/", employeeController.createEmployee);
 router.get(API_CONST.EMPLOYEE_ID, employeeController.getEmployee);
 router.get(API_CONST.EMPLOYEE_ID + API_CONST.TASK , employeeController.getEmployeeTasks);
+router.patch(API_CONST.EMPLOYEE_ID, employeeController.updateEmployee);
 
 module.exports = router;
