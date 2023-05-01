@@ -89,9 +89,21 @@ async function updateEmployee(data) {
   }
 }
 
+async function deleteEmployee(id) {
+  try {
+    await findEmployee(id);
+    await Employee.destroy({
+      where: {id}
+    });
+  } catch (error) {
+    throw error;
+  }
+}
+
 module.exports = {
   Employee,
   saveToDb,
   updateEmployee,
-  findEmployee
+  findEmployee,
+  deleteEmployee
 };

@@ -9,5 +9,6 @@ router.post("/", employeeController.createEmployee);
 router.get(API_CONST.EMPLOYEE_ID, employeeController.getEmployee);
 router.get(API_CONST.EMPLOYEE_ID + API_CONST.TASK , employeeController.getEmployeeTasks);
 router.patch(API_CONST.EMPLOYEE_ID, employeeController.updateEmployee);
+router.delete(API_CONST.EMPLOYEE_ID, employeeController.deleteEmployee)
 
 module.exports = router;

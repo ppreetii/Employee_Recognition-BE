@@ -233,7 +233,7 @@
           }
         }
       },
-      "patch" : {
+      "patch": {
         "summary": "Update Existing Employee",
         "tags": ["Employees"],
         "x-amazon-apigateway-auth": {
@@ -327,6 +327,37 @@
                 }
               }
             }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Deletes an Employee by id",
+        "tags": ["Employees"],
+        "x-amazon-apigateway-auth": {
+          "type": "NONE"
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "The Employee id"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Delete was successful."
+          },
+          "500": {
+            "description": "Employee not found."
           }
         }
       }

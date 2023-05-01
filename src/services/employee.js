@@ -93,9 +93,18 @@ const updateEmployee = async (data) => {
   }
 };
 
+const deleteEmployee = async(id) =>{
+  try {
+    await Employee.deleteEmployee(id);
+  } catch (error) {
+    throw error;
+  }
+}
+
 module.exports = {
   getEmployee,
   getEmployeeTasks,
   createEmployee,
   updateEmployee,
+  deleteEmployee
 };

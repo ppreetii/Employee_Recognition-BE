@@ -19,8 +19,11 @@ const updateEmployeeSchema = joi
   })
   .required();
 
+const deleteEmployeeSchema = joi.number().integer().required();
+
 module.exports = {
   getEmployeeSchema,
   createEmployeeSchema,
   updateEmployeeSchema,
+  deleteEmployeeSchema
 };

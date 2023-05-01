@@ -2,7 +2,8 @@ const { validate } = require("../../validation-schemas/validation");
 const {
   getEmployeeSchema,
   createEmployeeSchema,
-  updateEmployeeSchema
+  updateEmployeeSchema,
+  deleteEmployeeSchema
 } = require("../../validation-schemas/employee");
 const employeeServices = require("../../services/employee");
 
@@ -60,9 +61,22 @@ const updateEmployee = async (req,res,next) =>{
   }
 }
 
+const deleteEmployee = async (req,res,next) =>{
+  try {
+    const { employeeId } = req.params;
+    await validate(deleteEmployeeSchema, employeeId);
+    await employeeServices.deleteEmployee(employeeId);
+
+    res.status(204).json({});
+  } catch (error) {
+    next(error)
+  }
+}
+
 module.exports = {
   getEmployee,
   getEmployeeTasks,
   createEmployee,
-  updateEmployee
+  updateEmployee,
+  deleteEmployee
 };
