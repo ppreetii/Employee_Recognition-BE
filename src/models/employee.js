@@ -43,6 +43,10 @@ const Employee = sequelize.define(
       allowNull: false,
       defaultValue: 0,
     },
+    is_active : {
+      type: DataTypes.TINYINT,
+      default: 1
+    }
   },
   { timestamps: true }
 );
@@ -66,7 +70,12 @@ async function saveToDb(empData = {}) {
 
 async function findEmployee(id) {
   try {
-    const employee = await Employee.findByPk(id);
+    const employee = await Employee.findOne({
+      where : {
+        id,
+        is_active: 1
+      }
+    });
     if (!employee) {
       throw new Error("Employee Not Found");
     }
@@ -91,10 +100,9 @@ async function updateEmployee(data) {
 
 async function deleteEmployee(id) {
   try {
-    await findEmployee(id);
-    await Employee.destroy({
-      where: {id}
-    });
+    const employee = await findEmployee(id);
+    employee.is_active = 0;
+    await employee.save();
   } catch (error) {
     throw error;
   }

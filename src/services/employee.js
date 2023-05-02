@@ -6,9 +6,10 @@ const getEmployee = async (id) => {
     const employee = await Employee.findEmployee(id);
 
     return {
-      id: "EMPK-" + employee.id,
+      id: employee.id,
       name: employee.name,
       designation: employee.designation,
+      email: employee.email,
       bonusStars: employee.bonusStars,
       empOfDayCount: employee.employee_of_the_day,
       empOfWeekCount: employee.employee_of_the_week,
