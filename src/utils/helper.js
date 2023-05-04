@@ -30,9 +30,11 @@ const isCurrentDate = (date) => {
   const givenDate = new Date(date);
   const currentDate = new Date();
 
-  return givenDate.getFullYear() === currentDate.getFullYear() &&
+  return (
+    givenDate.getFullYear() === currentDate.getFullYear() &&
     givenDate.getMonth() === currentDate.getMonth() &&
-    givenDate.getDate() === currentDate.getDate();
+    givenDate.getDate() === currentDate.getDate()
+  );
 };
 
 const findLastWeekDay = (date) => {
@@ -122,9 +124,21 @@ const findFirstAndLastDayOfPreviousMonth = (date) => {
       .toString()
       .padStart(2, "0")}-01`,
     month: lastDayOfPreviousMonth.getMonth(),
-    year: lastDayOfPreviousMonth.getFullYear()
+    year: lastDayOfPreviousMonth.getFullYear(),
   };
 };
+
+function formatDate(date) {
+  const givenDate = new Date(date);
+  const year = givenDate.getFullYear();
+  const month = ("0" + (givenDate.getMonth() + 1)).slice(-2);
+  const day = ("0" + givenDate.getDate()).slice(-2);
+  return `${year}-${month}-${day}`;
+}
+
+function convertToIST(date) {
+  return new Date(new Date(date).getTime() + 330 * 60 * 1000);
+}
 
 module.exports = {
   checkForWeekend,
@@ -135,4 +149,6 @@ module.exports = {
   daysDifference,
   getMondays,
   findFirstAndLastDayOfPreviousMonth,
+  formatDate,
+  convertToIST
 };

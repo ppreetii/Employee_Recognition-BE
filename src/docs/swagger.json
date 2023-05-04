@@ -419,6 +419,110 @@
           }
         }
       }
+    },
+    "/tasks": {
+      "post": {
+        "summary": "Create New Task",
+        "tags": ["Tasks"],
+        "x-amazon-apigateway-auth": {
+          "type": "NONE"
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "summary": {
+                    "type": "string",
+                    "required": true
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "employeeId": {
+                    "type": "integer"
+                  },
+                  "deadline": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "A json object of Task details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "items": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "summary": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "enum" : [
+                        "ToDo",
+                        "InProgress",
+                        "Done"
+                      ]
+                    },
+                    "employeeId": {
+                      "type": "integer"
+                    },
+                    "deadline": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "id": 1,
+                  "summary": "Task 1 Summary",
+                  "description": "Task 1 Description",
+                  "status": "ToDo",
+                  "employeeId": 32,
+                  "deadline": "2023-05-08"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "A json object of error details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "items": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "reason": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "messsage": "Error",
+                  "reason": "\"summary\" must be a string ; \"description\" must be a string ; \"deadline\" must be greater than or equal to \"2023-05-05T00:00:00.000Z\" ; \"employeeId\" must be an integer"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {

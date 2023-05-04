@@ -7,6 +7,7 @@ const swaggerUi = require('swagger-ui-express');
 
 const rewardRoutes = require("./src/routes/v1/reward");
 const employeeRoutes = require("./src/routes/v1/employee");
+const taskRoutes = require("./src/routes/v1/task");
 const API = require("./src/constants/api");
 const rewardServices = require("./src/services/reward");
 const COMMON = require("./src/constants/common");
@@ -29,6 +30,7 @@ app.use(cors());
 app.use(helmet());
 app.use(API.BASE_URL + API.REWARD, rewardRoutes);
 app.use(API.BASE_URL + API.EMPLOYEE, employeeRoutes);
+app.use(API.BASE_URL + API.TASK, taskRoutes);
 app.use(API.SWAGGER, swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use("*", (req, res) => res.status(404).json("Page not found"));
 

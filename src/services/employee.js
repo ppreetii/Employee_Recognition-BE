@@ -1,5 +1,5 @@
 const Employee = require("../models/employee");
-const Task = require("../models/task");
+const {Task} = require("../models/task");
 
 const getEmployee = async (id) => {
   try {
