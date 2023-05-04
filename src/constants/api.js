@@ -5,5 +5,6 @@ module.exports = {
     REWARD_TYPE: '/:rewardType',
     EMPLOYEE:'/employees',
     EMPLOYEE_ID: '/:employeeId',
-    TASK: '/tasks'
+    TASK: '/tasks',
+    TASK_ID: "/:taskId"
 }

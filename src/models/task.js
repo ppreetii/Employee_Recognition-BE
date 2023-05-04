@@ -1,7 +1,7 @@
 const { DataTypes } = require("sequelize");
 
 const sequelize = require("../utils/DbConnection");
-const { Employee ,findEmployee} = require("./employee");
+const { Employee, findEmployee } = require("./employee");
 const COMMON = require("../constants/common");
 const Utils = require("../utils/helper");
 
@@ -72,7 +72,7 @@ const saveTask = async (data) => {
         taskData.date_started = Utils.convertToIST(new Date());
         taskData.status = data.status;
         break;
-        
+
       case COMMON.TASK_STATUS.DONE:
         taskData.date_completed = Utils.convertToIST(new Date());
         taskData.status = data.status;
@@ -89,7 +89,20 @@ const saveTask = async (data) => {
   return task;
 };
 
+const findTask = async (id) => {
+  try {
+    const task = await Task.findByPk(id);
+    if (!task) {
+      throw new Error("Task Not Found");
+    }
+
+    return task;
+  } catch (error) {
+    throw error;
+  }
+};
 module.exports = {
   Task,
   saveTask,
+  findTask,
 };

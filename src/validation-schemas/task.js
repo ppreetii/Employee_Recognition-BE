@@ -14,6 +14,9 @@ const createTaskSchema = joi.object().keys({
     .min(`${Utils.formatDate(new Date())}`),
 });
 
+const getTaskSchema = joi.number().integer().required();
+
 module.exports = {
-    createTaskSchema
+    createTaskSchema,
+    getTaskSchema
 }

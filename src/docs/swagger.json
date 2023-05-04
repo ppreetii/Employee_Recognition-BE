@@ -446,7 +446,8 @@
                     "type": "string"
                   },
                   "employeeId": {
-                    "type": "integer"
+                    "type": "integer",
+                    "minimum": 1
                   },
                   "deadline": {
                     "type": "string"
@@ -474,11 +475,7 @@
                       "type": "string"
                     },
                     "status": {
-                      "enum" : [
-                        "ToDo",
-                        "InProgress",
-                        "Done"
-                      ]
+                      "enum": ["ToDo", "InProgress", "Done"]
                     },
                     "employeeId": {
                       "type": "integer"
@@ -517,6 +514,92 @@
                 "example": {
                   "messsage": "Error",
                   "reason": "\"summary\" must be a string ; \"description\" must be a string ; \"deadline\" must be greater than or equal to \"2023-05-05T00:00:00.000Z\" ; \"employeeId\" must be an integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tasks/{taskId}": {
+      "get": {
+        "summary": "Returns Task data by its Id",
+        "tags": ["Tasks"],
+        "x-amazon-apigateway-auth": {
+          "type": "NONE"
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "taskId",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "description": "The Task ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A json object of Task details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "items": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "summary": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+
+                    "deadline": {
+                      "type": "string"
+                    },
+                    "employeeId": {
+                      "type": "integer"
+                    }
+                  }
+                },
+                "example": {
+                  "id": 1,
+                  "summary": "Task 1 Summary",
+                  "description": "Task 1 Description",
+                  "status": "Done",
+                  "employeeId": 22,
+                  "deadline": "2023-03-28"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "A json object of error details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "items": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "reason": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "messsage": "Error",
+                  "reason": "Task Not Found"
                 }
               }
             }
@@ -701,6 +784,43 @@
                 "description": "Date of next result for EmpOfMonth"
               }
             }
+          }
+        }
+      },
+      "Task": {
+        "description": "A detailed schema of Task",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Task ID"
+          },
+          "summary": {
+            "type": "string",
+            "description": "Short Sumamry of what the task is about"
+          },
+          "status": {
+            "type": "string",
+            "description": "Status of task - ToDo, InProgress, Done"
+          },
+          "date_assigned": {
+            "type": "string",
+            "description": "Date on which the task was assigned to employee"
+          },
+          "deadline": {
+            "type": "string",
+            "description": "Deadline date to complete the task"
+          },
+          "date_started": {
+            "type": "string",
+            "description": "Date on which employee started the work"
+          },
+          "date_completed": {
+            "type": "string",
+            "description": "Date on which employee completes the task"
+          },
+          "employeeId": {
+            "type": "integer",
+            "description": "Employee ID of employee to which task is assigned"
           }
         }
       }

@@ -1,5 +1,5 @@
 const taskServices = require("../../services/task");
-const {createTaskSchema} = require("../../validation-schemas/task");
+const {createTaskSchema,getTaskSchema} = require("../../validation-schemas/task");
 const {validate} = require("../../validation-schemas/validation")
 
 const createTask = async (req,res,next) =>{
@@ -15,6 +15,18 @@ const createTask = async (req,res,next) =>{
     }
 }
 
+const getTask = async(req,res,next) =>{
+    try {
+        const { taskId } = req.params;
+        await validate(getTaskSchema, taskId);
+        const task = await taskServices.getTask(taskId);
+        res.status(200).json(task);
+    } catch (error) {
+        next(error);
+    }
+}
+
 module.exports = {
-    createTask
+    createTask,
+    getTask
 }
