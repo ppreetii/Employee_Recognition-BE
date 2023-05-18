@@ -605,6 +605,56 @@
             }
           }
         }
+      },
+      "delete": {
+        "summary": "Deletes a Task by id",
+        "tags": ["Tasks"],
+        "x-amazon-apigateway-auth": {
+          "type": "NONE"
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "taskId",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "The Task id"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Delete was successful."
+          },
+          "500": {
+            "description": "A json object of error details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "items": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "reason": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "messsage": "Error",
+                  "reason": "Task Not Found"
+                }
+              }
+            }
+          }
+        }
       }
     }
   },

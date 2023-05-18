@@ -101,8 +101,22 @@ const findTask = async (id) => {
     throw error;
   }
 };
+
+const deleteTask = async (id) =>{
+  try {
+    await findTask(id);
+    await Task.destroy({
+      where: {id}
+    })
+
+  } catch (error) {
+    throw error;
+  }
+}
+
 module.exports = {
   Task,
   saveTask,
   findTask,
+  deleteTask
 };

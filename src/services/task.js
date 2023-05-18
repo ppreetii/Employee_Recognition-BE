@@ -33,7 +33,16 @@ const getTask = async (id) => {
   }
 }
 
+const deleteTask = async (id) =>{
+  try {
+    await Task.deleteTask(id);    
+  } catch (error) {
+    throw error;
+  }
+}
+
 module.exports = {
     createTask,
-    getTask
+    getTask,
+    deleteTask
 }
