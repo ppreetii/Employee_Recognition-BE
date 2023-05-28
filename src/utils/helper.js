@@ -140,6 +140,14 @@ function convertToIST(date) {
   return new Date(new Date(date).getTime() + 330 * 60 * 1000);
 }
 
+function isDateLessThan(date1, date2) {
+  const date1Obj = new Date(date1);
+  const date2Obj = new Date(date2);
+
+  return date1Obj < date2Obj;
+}
+
+
 module.exports = {
   checkForWeekend,
   isDateInPast,
@@ -150,5 +158,6 @@ module.exports = {
   getMondays,
   findFirstAndLastDayOfPreviousMonth,
   formatDate,
-  convertToIST
+  convertToIST,
+  isDateLessThan
 };

@@ -102,21 +102,65 @@ const findTask = async (id) => {
   }
 };
 
-const deleteTask = async (id) =>{
+const deleteTask = async (id) => {
   try {
     await findTask(id);
     await Task.destroy({
-      where: {id}
-    })
-
+      where: { id },
+    });
   } catch (error) {
     throw error;
   }
-}
+};
+
+const updateTask = async (id, data) => {
+  try {
+    const task = await findTask(id);
+
+    if (data) {
+      task.summary = data?.summary;
+      task.description = data?.description;
+
+      if (task.employeeId !== data?.employeeId) {
+        await findEmployee(data.employeeId);
+        task.employeeId = data.employeeId;
+      }
+
+      if (task.status !== data?.status) {
+        task.status = data.status;
+        switch (data.status) {
+          case COMMON.TASK_STATUS.INPROGRESS:
+            if (!task.date_started) {
+              task.date_started = Utils.convertToIST(new Date());
+            }
+            break;
+
+          case COMMON.TASK_STATUS.DONE:
+            if (!task.date_started) {
+              task.date_completed = Utils.convertToIST(new Date());
+            }
+            break;
+
+          default:
+            task.status = COMMON.TASK_STATUS.TODO;
+        }
+      }
+
+      if (data?.deadline) task.deadline = data.deadline;
+
+      await task.save();
+
+      return task;
+    }
+  } catch (error) {
+    throw error;
+  }
+};
 
 module.exports = {
   Task,
   saveTask,
   findTask,
-  deleteTask
+  deleteTask,
+  updateTask,
 };

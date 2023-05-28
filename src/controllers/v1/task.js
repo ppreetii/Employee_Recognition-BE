@@ -2,6 +2,7 @@ const taskServices = require("../../services/task");
 const {
   createTaskSchema,
   getTaskSchema,
+  updateTaskSchema,
 } = require("../../validation-schemas/task");
 const { validate } = require("../../validation-schemas/validation");
 
@@ -40,8 +41,20 @@ const deleteTask = async (req, res, next) => {
   }
 };
 
+const updateTask = async (req, res, next) => {
+  try {
+    const { taskId } = req.params;
+    await validate(updateTaskSchema, { ...req.body, taskId });
+    const task = await taskServices.updateTask(taskId, req.body);
+    res.status(200).json(task);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   createTask,
   getTask,
   deleteTask,
+  updateTask
 };

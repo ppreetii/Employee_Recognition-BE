@@ -655,6 +655,120 @@
             }
           }
         }
+      },
+      "put": {
+        "summary": "Update Existing Task",
+        "tags": ["Tasks"],
+        "x-amazon-apigateway-auth": {
+          "type": "NONE"
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "taskId",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "description": "The Task ID"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "summary": {
+                    "type": "string",
+                    "required": true
+                  },
+                  "description": {
+                    "type": "string",
+                    "required": true
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": ["ToDo", "InProgress", "Done"],
+                    "required": true
+                  },
+                  "employeeId": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "deadline": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "A json object of Task details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "items": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "summary": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "deadline": {
+                      "type": "string"
+                    },
+                    "employeeId": {
+                      "type": "integer"
+                    }
+                  }
+                },
+                "example": {
+                  "id": 1,
+                  "summary": "Task 1 Summary",
+                  "description": "Task 1 Description",
+                  "status": "Done",
+                  "employeeId": 22,
+                  "deadline": "2023-03-28"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "A json object of error details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "items": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "reason": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "messsage": "Error",
+                  "reason": "\"taskId\" must be a number ; \"summary\" must be a string ; \"description\" must be a string ; \"status\" must be one of [ToDo, InProgress, Done] ; \"status\" must be a string ; \"deadline\" must be a valid date"
+                }
+              }
+            }
+          }
+        }
       }
     }
   },

@@ -8,5 +8,6 @@ const router = Router();
 router.post("/", taskController.createTask);
 router.get(API_CONST.TASK_ID, taskController.getTask);
 router.delete(API_CONST.TASK_ID, taskController.deleteTask);
+router.put(API_CONST.TASK_ID,taskController.updateTask);
 
 module.exports = router;
