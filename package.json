@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "npx sequelize db:migrate && npx sequelize db:seed:all && node index.js",
-    "dev": "npx sequelize db:migrate && npx sequelize db:seed:all && nodemon index.js"
+    "dev": "npx sequelize db:migrate && npx sequelize db:seed:all && nodemon index.js",
+    "build": "npx sequelize db:migrate && npx sequelize db:seed:all && node index.js"
   },
   "keywords": [],
   "author": "Preeti Gupta",
