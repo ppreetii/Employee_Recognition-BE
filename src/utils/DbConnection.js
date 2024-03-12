@@ -17,6 +17,7 @@ class DbConnection {
       config.database,
       config.username,
       config.password,
+      dialectModule: require('mysql2'),
       config
     );
     return dbInstance;
