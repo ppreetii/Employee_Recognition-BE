@@ -1,9 +1,9 @@
 const { DataTypes } = require("sequelize");
 
 const sequelize = require("../utils/DbConnection");
-const {Employee} = require('./employee.js');
+const {Employee} = require('./employee');
 const COMMON = require('../constants/common');
-const PdfServices = require("../services/pdf.js");
+const PdfServices = require("../services/pdf");
 const { sendEmail } = require("../utils/sendEmail");
 
 const empOfTheDay = sequelize.define(
