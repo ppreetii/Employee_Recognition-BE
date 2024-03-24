@@ -13,6 +13,10 @@
     {
       "url": "http://localhost:5000/api/v1.0",
       "description": "Local server"
+    },
+    {
+      "url": "http://localhost:5000/api/v1.0",
+      "description": "Deployed server"
     }
   ],
   "paths": {

@@ -7,6 +7,7 @@ module.exports = {
   password: process.env.DB_PASSWORD,
   dbName: process.env.DATABASE_NAME,
   hostname: process.env.DB_HOSTNAME,
+  dbPort: process.env.DB_PORT,
   environment: process.env.NODE_ENV,
   courierApiKey: process.env.COURIER_AUTH_TOKEN,
   courierNotificationId: process.env.COURIER_NOTIIFICATION_ID

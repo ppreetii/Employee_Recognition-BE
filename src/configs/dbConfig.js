@@ -8,8 +8,7 @@ module.exports = {
     host: env.hostname,
     dialect: "mysql",
     seederStorage: "sequelize",
-    logging: false,
-    dialectModule: require('mysql2')
+    logging: false
   },
   test: {
     username: env.userName,
@@ -18,8 +17,7 @@ module.exports = {
     host: env.hostname,
     dialect: "mysql",
     seederStorage: "sequelize",
-    logging: false,
-    dialectModule: require('mysql2')
+    logging: false
   },
   production: {
     username: env.userName,
@@ -29,6 +27,6 @@ module.exports = {
     dialect: "mysql",
     seederStorage: "sequelize",
     logging: false,
-    dialectModule: require('mysql2')
+    port : env.dbPort
   },
 };
