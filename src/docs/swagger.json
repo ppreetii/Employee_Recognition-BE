@@ -15,7 +15,7 @@
       "description": "Local server"
     },
     {
-      "url": "https://employee-recognition-be.onrender.com",
+      "url": "https://employee-recognition-be.onrender.com/api/v1.0",
       "description": "Deployed server"
     }
   ],
